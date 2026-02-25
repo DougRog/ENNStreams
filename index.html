@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENN Live Streams</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest/dist/hls.min.js"></script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0d0d0f;
+      --surface: #18181b;
+      --border: #2a2a2f;
+      --accent: #e63c2f;
+      --text-primary: #f4f4f5;
+      --text-muted: #71717a;
+      --radius: 12px;
+      --gap: 32px;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      padding: 48px 24px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.25rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    header h1 span {
+      color: var(--accent);
+    }
+
+    header p {
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .streams {
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .stream-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .stream-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .stream-label h2 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--text-primary);
+    }
+
+    .live-badge {
+      margin-left: auto;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(230, 60, 47, 0.12);
+      border: 1px solid rgba(230, 60, 47, 0.3);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .error-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .error-overlay.visible {
+      display: flex;
+    }
+
+    .error-overlay svg {
+      opacity: 0.4;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 56px;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>ENN <span>Live</span> Streams</h1>
+    <p>Erie News Now &mdash; Live television streams</p>
+  </header>
+
+  <div class="streams">
+
+    <div class="stream-card">
+      <div class="stream-label">
+        <div class="live-dot"></div>
+        <h2>Erie News Now</h2>
+        <span class="live-badge">Live</span>
+      </div>
+      <div class="video-wrapper">
+        <video id="video-1" controls playsinline></video>
+        <div class="error-overlay" id="err-1">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Stream unavailable
+        </div>
+      </div>
+    </div>
+
+    <div class="stream-card">
+      <div class="stream-label">
+        <div class="live-dot"></div>
+        <h2>First Warning Weather Now</h2>
+        <span class="live-badge">Live</span>
+      </div>
+      <div class="video-wrapper">
+        <video id="video-2" controls playsinline></video>
+        <div class="error-overlay" id="err-2">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Stream unavailable
+        </div>
+      </div>
+    </div>
+
+    <div class="stream-card">
+      <div class="stream-label">
+        <div class="live-dot"></div>
+        <h2>Doppler Max 5D Storm Spotter</h2>
+        <span class="live-badge">Live</span>
+      </div>
+      <div class="video-wrapper">
+        <video id="video-3" controls playsinline></video>
+        <div class="error-overlay" id="err-3">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Stream unavailable
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    &copy; Erie News Now. All rights reserved.
+  </footer>
+
+  <script>
+    const streams = [
+      {
+        videoId: "video-1",
+        errId: "err-1",
+        src: "https://dai2-playlistserver.aws.syncbak.com/cpl/22958529/dai2v5/1.0/7b7d/master.m3u8?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjIwMTYwNDAxIn0.eyJtaWQiOiIyMjk1ODUyOSIsImNpZCI6MjMyODIsInNpZCI6MTI4MywibWQ1IjoiZWZlN2JhM2Q4YzlkZjdmNzQwZTVhZDllYmRjMzQ3ZTgiLCJpYXQiOjE3MDA1OTUzNDQsImlzcyI6IlN5bmNiYWsgKFRHKSJ9.8wbZ5PZavgTLOKpZjRmu0hUllUQo3WqJ1ammPozO0dE"
+      },
+      {
+        videoId: "video-2",
+        errId: "err-2",
+        src: "https://dai2-playlistserver.aws.syncbak.com/cpl/23588387/dai2v5/1.0/6e756c6c/master.m3u8?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjIwMTYwNDAxIn0.eyJtaWQiOiIyMzU4ODM4NyIsImNpZCI6MjM4MTIsInNpZCI6MTMxNywibWQ1IjoiYzMzZjRmNmIxOGRhMGVmNzVmYmYzMmQxODg2M2EwNzIiLCJpYXQiOjE3MjQyNTE2MDEsImlzcyI6IlN5bmNiYWsgKFRHKSIsImp0aSI6IjUzYWJmOGJhLTc3OWEtNGZjMS1hMzNlLWFkNGE5YjhiYjA5ZiJ9.RmJty39ICf_o2pnE8mtloXDUFzu7og40EWB4JV0fFqY"
+      },
+      {
+        videoId: "video-3",
+        errId: "err-3",
+        src: "https://dai2-playlistserver.aws.syncbak.com/cpl/23886117/dai2v5/1.0/6e756c6c/master.m3u8?access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjIwMTYwNDAxIn0.eyJtaWQiOiIyMzg4NjExNyIsImNpZCI6MjQwMzAsInNpZCI6MTMxNywibWQ1IjoiNzE4NjFhZTI4YTFkZTA2YTZiZGNkZjQ5ZjIzZjhiOTMiLCJpYXQiOjE3Mzk4MDQ5NjksImlzcyI6IlN5bmNiYWsgKFRHKSIsImp0aSI6IjRiY2FmOWJkLTk0ODktNGQ4ZC1iYjNkLTQ5MzhkY2NiY2FlYyJ9.uwoLp7_XjFIV5r8-qPze_rcRuSPs6MmiAB8h5t1B_S8"
+      }
+    ];
+
+    streams.forEach(({ videoId, errId, src }) => {
+      const video = document.getElementById(videoId);
+      const errOverlay = document.getElementById(errId);
+
+      function showError() {
+        errOverlay.classList.add("visible");
+      }
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({ lowLatencyMode: true });
+        hls.loadSource(src);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) showError();
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        // Safari native HLS
+        video.src = src;
+        video.addEventListener("error", showError);
+      } else {
+        showError();
+      }
+    });
+  </script>
+
+</body>
+</html>
